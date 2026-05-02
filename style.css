@@ -1193,9 +1193,9 @@ input[type="search"] {
 		position: sticky;
 		top: clamp(1.25rem, 2vw, 2rem);
 		margin: 0;
-		flex: 0 0 clamp(12.75rem, 13.5vw, 14.5rem);
-		width: clamp(12.75rem, 13.5vw, 14.5rem);
-		max-width: clamp(12.75rem, 13.5vw, 14.5rem);
+		flex: 0 0 auto;
+		width: fit-content;
+		max-width: fit-content;
 		transition:
 			flex-basis 300ms cubic-bezier(0.22, 1, 0.36, 1),
 			width 300ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -1209,6 +1209,7 @@ input[type="search"] {
 		justify-content: start;
 		row-gap: 0.45rem;
 		align-items: flex-start;
+		width: fit-content;
 	}
 
 	.has-post-toc .single-post-layout .post-toc-toggle .posts-tools-toggle-copy {

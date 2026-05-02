@@ -8,16 +8,17 @@ while ( have_posts() ) :
 	$toc_panel_id = 'post-toc-panel-' . get_the_ID();
 	?>
 	<div class="single-post-layout">
-		<section class="post-toc-shell" data-post-toc aria-label="<?php esc_attr_e( 'Table of contents', 'cit351' ); ?>">
+		<section class="post-toc-shell" data-post-toc aria-label="<?php esc_attr_e( 'Contents', 'cit351' ); ?>">
 			<div class="tool-card post-toc-card">
 				<button class="posts-tools-toggle post-toc-toggle" type="button" aria-expanded="false" aria-controls="<?php echo esc_attr( $toc_panel_id ); ?>">
 					<span class="posts-tools-toggle-copy">
-						<span class="posts-tools-toggle-title"><?php esc_html_e( 'Table of Contents', 'cit351' ); ?></span>
+						<span class="posts-tools-toggle-title"><?php esc_html_e( 'Table Of', 'cit351' ); ?></span>
+						<span class="posts-tools-toggle-title"><?php esc_html_e( 'Contents', 'cit351' ); ?></span>
 					</span>
 					<span class="posts-tools-toggle-indicator" aria-hidden="true"></span>
 				</button>
 				<div class="posts-tools-panel post-toc-panel" id="<?php echo esc_attr( $toc_panel_id ); ?>" hidden>
-					<nav class="post-toc-nav" aria-label="<?php esc_attr_e( 'Table of contents', 'cit351' ); ?>"></nav>
+					<nav class="post-toc-nav" aria-label="<?php esc_attr_e( 'Contents', 'cit351' ); ?>"></nav>
 				</div>
 			</div>
 		</section>

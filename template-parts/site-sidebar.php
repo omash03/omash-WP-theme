@@ -4,7 +4,8 @@
 			<span class="site-brand-mark"></span>
 			<span class="site-brand-text">
 				<strong><?php bloginfo( 'name' ); ?></strong>
-				<span><?php esc_html_e( 'Projects & Skills', 'cit351' ); ?></span>
+				<span><?php esc_html_e( 'Projects & Guides', 'cit351' ); ?></span>
+				<span><?php	esc_html_e( 'By Owen Sheffer', 'cit351' ); ?></span>
 			</span>
 		</a>
 		<button class="sidebar-close" type="button" aria-label="<?php esc_attr_e( 'Close menu', 'cit351' ); ?>">
