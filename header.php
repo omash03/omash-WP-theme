@@ -8,7 +8,7 @@ $site_name = get_bloginfo( 'name' );
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>
 		(function() {
-			var theme = 'dark';
+			var theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
 			try {
 				var storedTheme = window.localStorage.getItem('cit351-theme');

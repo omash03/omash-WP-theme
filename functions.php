@@ -39,21 +39,40 @@ function cit351_setup() {
 add_action( 'after_setup_theme', 'cit351_setup' );
 
 function cit351_enqueue_assets() {
-	$theme = wp_get_theme();
+	$style_path = get_stylesheet_directory() . '/style.css';
+	$script_path = get_template_directory() . '/assets/js/theme.js';
+	$style_version = file_exists( $style_path ) ? filemtime( $style_path ) : wp_get_theme()->get( 'Version' );
+	$script_version = file_exists( $script_path ) ? filemtime( $script_path ) : wp_get_theme()->get( 'Version' );
 
-	wp_enqueue_style( 'cit351-style', get_stylesheet_uri(), array(), $theme->get( 'Version' ) );
-	wp_enqueue_script( 'cit351-theme', get_template_directory_uri() . '/assets/js/theme.js', array(), $theme->get( 'Version' ), true );
+	wp_enqueue_style( 'cit351-style', get_stylesheet_uri(), array(), $style_version );
+	wp_enqueue_script( 'cit351-theme', get_template_directory_uri() . '/assets/js/theme.js', array(), $script_version, true );
 }
 add_action( 'wp_enqueue_scripts', 'cit351_enqueue_assets' );
+
+function cit351_get_theme_icon_markup( $theme ) {
+	$icons = array(
+		'dark'  => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 15.65a8.9 8.9 0 0 1-4.32 1.11c-4.94 0-8.95-4.01-8.95-8.96 0-1.11.2-2.18.59-3.17a.92.92 0 0 0-1.23-1.15A10.7 10.7 0 1 0 21.22 16.9a.92.92 0 0 0-1.03-1.25Z" fill="currentColor"/></svg>',
+		'light' => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5.1a.9.9 0 0 1 .9.9V3.9a.9.9 0 1 1-1.8 0V6a.9.9 0 0 1 .9-.9Zm0 12.9a.9.9 0 0 1 .9.9V21a.9.9 0 1 1-1.8 0v-2.1a.9.9 0 0 1 .9-.9Zm6.9-6.9a.9.9 0 0 1 .9-.9H21a.9.9 0 1 1 0 1.8h-2.1a.9.9 0 0 1-.9-.9Zm-12.9 0a.9.9 0 0 1 .9-.9H9a.9.9 0 1 1 0 1.8H6a.9.9 0 0 1-.9-.9Zm10.87-4.77a.9.9 0 0 1 1.27 0l1.48 1.48a.9.9 0 0 1-1.27 1.27l-1.48-1.48a.9.9 0 0 1 0-1.27Zm-9.54 9.54a.9.9 0 0 1 1.27 0l1.48 1.48a.9.9 0 0 1-1.27 1.27L7.32 17.4a.9.9 0 0 1 0-1.27Zm9.54 1.48a.9.9 0 0 1 0 1.27l-1.48 1.48a.9.9 0 0 1-1.27-1.27l1.48-1.48a.9.9 0 0 1 1.27 0ZM8.59 6.32a.9.9 0 0 1 0 1.27L7.11 9.07A.9.9 0 0 1 5.84 7.8l1.48-1.48a.9.9 0 0 1 1.27 0ZM12 7.2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="currentColor"/></svg>',
+	);
+
+	if ( isset( $icons[ $theme ] ) ) {
+		return $icons[ $theme ];
+	}
+
+	return '';
+}
 
 function cit351_render_theme_toggle( $class_name = '' ) {
 	$class_names = trim( 'theme-toggle ' . $class_name );
 	?>
-	<button class="<?php echo esc_attr( $class_names ); ?>" type="button" data-theme-toggle aria-pressed="false" aria-label="<?php esc_attr_e( 'Switch to light mode', 'cit351' ); ?>">
+	<button class="<?php echo esc_attr( $class_names ); ?>" type="button" data-theme-toggle aria-pressed="false" aria-label="<?php esc_attr_e( 'Toggle theme', 'cit351' ); ?>">
 		<span class="theme-toggle-track" aria-hidden="true">
-			<span class="theme-toggle-thumb"></span>
+			<span class="theme-toggle-thumb">
+				<span class="theme-toggle-icon theme-toggle-icon-dark" data-theme-toggle-icon="dark" aria-hidden="true"><?php echo cit351_get_theme_icon_markup( 'dark' ); ?></span>
+				<span class="theme-toggle-icon theme-toggle-icon-light" data-theme-toggle-icon="light" aria-hidden="true"><?php echo cit351_get_theme_icon_markup( 'light' ); ?></span>
+			</span>
 		</span>
-		<span class="theme-toggle-copy">
+		<span class="theme-toggle-copy" aria-hidden="true">
 			<span class="theme-toggle-label"><?php esc_html_e( 'Theme', 'cit351' ); ?></span>
 			<span class="theme-toggle-state" data-theme-toggle-state><?php esc_html_e( 'Dark', 'cit351' ); ?></span>
 		</span>

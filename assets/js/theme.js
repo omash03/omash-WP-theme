@@ -1,24 +1,49 @@
 const cit351ThemeStorageKey = 'cit351-theme';
 const cit351Root = document.documentElement;
+const cit351SystemThemeMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
-const cit351ReadTheme = () => {
-	const activeTheme = cit351Root.getAttribute('data-theme');
+const cit351GetStoredTheme = () => {
+	try {
+		const storedTheme = window.localStorage.getItem(cit351ThemeStorageKey);
 
-	if (activeTheme === 'light' || activeTheme === 'dark') {
-		return activeTheme;
+		if (storedTheme === 'light' || storedTheme === 'dark') {
+			return storedTheme;
+		}
+	} catch (error) {
+		// Ignore storage access issues.
 	}
 
-	return 'dark';
+	return '';
 };
 
-const cit351WriteTheme = (theme) => {
+const cit351GetSystemTheme = () => {
+	if (cit351SystemThemeMedia && cit351SystemThemeMedia.matches) {
+		return 'dark';
+	}
+
+	return 'light';
+};
+
+const cit351ReadTheme = () => {
+	const storedTheme = cit351GetStoredTheme();
+
+	if (storedTheme) {
+		return storedTheme;
+	}
+
+	return cit351GetSystemTheme();
+};
+
+const cit351WriteTheme = (theme, persist = false) => {
 	cit351Root.setAttribute('data-theme', theme);
 	cit351Root.style.colorScheme = theme;
 
-	try {
-		window.localStorage.setItem(cit351ThemeStorageKey, theme);
-	} catch (error) {
-		// Ignore storage access issues.
+	if (persist) {
+		try {
+			window.localStorage.setItem(cit351ThemeStorageKey, theme);
+		} catch (error) {
+			// Ignore storage access issues.
+		}
 	}
 };
 
@@ -34,6 +59,187 @@ const cit351SyncThemeToggles = (theme) => {
 			state.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
 		}
 	});
+};
+
+const cit351ShortcutPulseStorageKey = 'cit351-shortcut-pulse';
+const cit351ShortcutPulseExactTargetSelector = '[data-shortcut-pulse-target]';
+const cit351ShortcutPulseSelector = '.copy-grid, .feature-grid, .credential-grid, .content-tools, .posts-tools-grid, .hero-panel';
+
+const cit351ReadShortcutPulseTargetId = () => {
+	try {
+		return window.sessionStorage.getItem(cit351ShortcutPulseStorageKey) || '';
+	} catch (error) {
+		return '';
+	}
+};
+
+const cit351StoreShortcutPulseTargetId = (targetId) => {
+	if (!targetId) {
+		return;
+	}
+
+	try {
+		window.sessionStorage.setItem(cit351ShortcutPulseStorageKey, targetId);
+	} catch (error) {
+		// Ignore storage access issues.
+	}
+};
+
+const cit351ClearStoredShortcutPulseTargetId = () => {
+	try {
+		window.sessionStorage.removeItem(cit351ShortcutPulseStorageKey);
+	} catch (error) {
+		// Ignore storage access issues.
+	}
+};
+
+const cit351GetShortcutPulseTarget = (element) => {
+	if (!element) {
+		return null;
+	}
+
+	if (element.matches(cit351ShortcutPulseExactTargetSelector)) {
+		return element;
+	}
+
+	const exactTarget = element.closest(cit351ShortcutPulseExactTargetSelector);
+
+	if (exactTarget) {
+		return exactTarget;
+	}
+
+	if (element.matches(cit351ShortcutPulseSelector)) {
+		return element;
+	}
+
+	return element.closest(cit351ShortcutPulseSelector);
+};
+
+const cit351TriggerShortcutPulse = (element) => {
+	const target = cit351GetShortcutPulseTarget(element);
+
+	if (!target) {
+		return;
+	}
+
+	target.classList.remove('shortcut-pulse');
+	target.getBoundingClientRect();
+	target.classList.add('shortcut-pulse');
+	target.addEventListener(
+		'animationend',
+		() => {
+			target.classList.remove('shortcut-pulse');
+		},
+		{ once: true }
+	);
+};
+
+const cit351ScheduleShortcutPulse = (element, delay = 180) => {
+	window.setTimeout(() => {
+		window.requestAnimationFrame(() => {
+			window.requestAnimationFrame(() => {
+				cit351TriggerShortcutPulse(element);
+			});
+		});
+	}, delay);
+};
+
+const cit351ScrollShortcutTargetIntoView = (element) => {
+	if (!element) {
+		return;
+	}
+
+	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		element.scrollIntoView({ block: 'start' });
+		return;
+	}
+
+	element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+const cit351PulseShortcutTargetById = (targetId, delay = 180) => {
+	if (!targetId) {
+		return false;
+	}
+
+	const target = document.getElementById(targetId);
+
+	if (!target) {
+		return false;
+	}
+
+	cit351ScheduleShortcutPulse(target, delay);
+
+	return true;
+};
+
+const cit351PulseStoredShortcutTarget = () => {
+	const targetId = cit351ReadShortcutPulseTargetId();
+
+	if (targetId) {
+		cit351ClearStoredShortcutPulseTargetId();
+		cit351PulseShortcutTargetById(targetId, 250);
+		return;
+	}
+
+	const currentHash = window.location.hash.replace(/^#/, '');
+
+	if (currentHash) {
+		cit351PulseShortcutTargetById(currentHash, 250);
+	}
+};
+
+const cit351HandleSidebarShortcutClick = (event, closeMenu) => {
+	const link = event.currentTarget;
+	const href = link.getAttribute('href');
+
+	if (!href) {
+		closeMenu();
+		return;
+	}
+
+	try {
+		const url = new URL(href, window.location.href);
+		const hasHash = Boolean(url.hash && url.hash !== '#');
+		const isSamePage = url.origin === window.location.origin && url.pathname === window.location.pathname && url.search === window.location.search;
+
+		if (hasHash) {
+			const targetId = url.hash.slice(1);
+
+			if (isSamePage) {
+				const target = document.getElementById(targetId);
+
+				if (target) {
+					event.preventDefault();
+					history.pushState(null, '', url.hash);
+					closeMenu();
+					cit351ScrollShortcutTargetIntoView(target);
+					cit351ScheduleShortcutPulse(target, 250);
+					return;
+				}
+			}
+
+			cit351StoreShortcutPulseTargetId(targetId);
+		}
+	} catch (error) {
+		if (href.charAt(0) === '#' && href.length > 1) {
+			const targetId = href.slice(1);
+			const target = document.getElementById(targetId);
+
+			if (target) {
+				event.preventDefault();
+				history.pushState(null, '', href);
+				closeMenu();
+				cit351ScrollShortcutTargetIntoView(target);
+				cit351ScheduleShortcutPulse(target, 250);
+				return;
+			}
+
+			cit351StoreShortcutPulseTargetId(targetId);
+		}
+	}
+
+	closeMenu();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -52,10 +258,22 @@ document.addEventListener('DOMContentLoaded', () => {
 	themeToggles.forEach((toggle) => {
 		toggle.addEventListener('click', () => {
 			activeTheme = activeTheme === 'dark' ? 'light' : 'dark';
-			cit351WriteTheme(activeTheme);
+			cit351WriteTheme(activeTheme, true);
 			cit351SyncThemeToggles(activeTheme);
 		});
 	});
+
+	if (cit351SystemThemeMedia && typeof cit351SystemThemeMedia.addEventListener === 'function') {
+		cit351SystemThemeMedia.addEventListener('change', () => {
+			if (cit351GetStoredTheme()) {
+				return;
+			}
+
+			activeTheme = cit351GetSystemTheme();
+			cit351WriteTheme(activeTheme);
+			cit351SyncThemeToggles(activeTheme);
+		});
+	}
 
 	const closeMenu = () => {
 		body.classList.remove('menu-open');
@@ -93,9 +311,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		sidebar.querySelectorAll('a').forEach((link) => {
-			link.addEventListener('click', closeMenu);
+			link.addEventListener('click', (event) => cit351HandleSidebarShortcutClick(event, closeMenu));
 		});
 	}
+
+	cit351PulseStoredShortcutTarget();
 
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape' && body.classList.contains('menu-open')) {
