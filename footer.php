@@ -6,7 +6,7 @@
 			<nav class="footer-links" aria-label="<?php esc_attr_e( 'Additional links', 'cit351' ); ?>">
 				<div class="footer-branding">
 					<p class="footer-meta">&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?></p>
-					<p class="footer-name"><?php esc_html_e( 'Owen Sheffer', 'cit351' ); ?></p>
+					<p class="footer-name"><?php esc_html_e( 'Owen M. Sheffer', 'cit351' ); ?></p>
 				</div>
 				<div class="footer-links-group">
 					<p class="footer-links-title"><?php esc_html_e( 'Additional Links', 'cit351' ); ?></p>

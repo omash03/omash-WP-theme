@@ -2,7 +2,7 @@
 get_header();
 
 $posts_url       = cit351_get_posts_url();
-$resume_url      = content_url( 'uploads/2026/05/Owen_Sheffer_Resume_PDF.pdf' );
+$resume_url      = content_url( 'https://omslabs.net/wp-content/uploads/2026/05/Owen_Sheffer_Resume.pdf' );
 $certificate_img = content_url( 'uploads/2026/01/CompTIA-Security-ce-certificate_pages-to-jpg-0001-1536x1187.jpg' );
 $certificate1_link = 'https://www.credly.com/badges/af0e0bcf-d721-49ed-a5c5-6753f48d37cc/public_url';
 ?>
@@ -20,11 +20,11 @@ $certificate1_link = 'https://www.credly.com/badges/af0e0bcf-d721-49ed-a5c5-6753
 <section class="copy-grid" id="about">
 	<div class="copy-card">
 		<h2><?php esc_html_e( 'About omsLabs', 'cit351' ); ?></h2>
-		<p><?php esc_html_e( 'IT professional with a wide range of knowledge of network engineering, technical support across many operating systems, systems administration, automation, and software development. I use this site to publish my side projects, study material for certs, and really anything I think may be useful to you or myself in the future.', 'cit351' ); ?></p>
+		<p><?php esc_html_e( 'I, Owen M. Sheffer (oms) am an IT professional with a broad scope of knowledge in IT network engineering, technical support across many operating systems, systems administration, automation, and software development. I use this site to publish my projects, or "labs", study material for certs, and really anything I think may be useful to you or myself in the future.', 'cit351' ); ?></p>
 	</div>
 	<div class="copy-card">
 		<h2><?php esc_html_e( 'Current focus', 'cit351' ); ?></h2>
-		<p><?php esc_html_e( 'Recent work has centered on infrastructure as code, automation, network security, and practical documentation. In a field that changes quickly, I treat each lab as a chance to learn, refine, and explain my projects and tasks clearly.', 'cit351' ); ?></p>
+		<p><?php esc_html_e( 'My recent work has centered on infrastructure as code, automation, network security, and practical documentation. In a field that changes quickly, I treat each lab as a chance to learn, refine, and explain my projects and tasks clearly.', 'cit351' ); ?></p>
 	</div>
 </section>
 
